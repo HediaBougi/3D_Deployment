@@ -1,9 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import numpy as np
 import plotly.graph_objects as go
 from tools.PolygonRequest import *
 from db.Building import Building
 import time
+from plotly.offline import plot
+
 
 app = Flask(__name__)
 BuildingObject = Building('buildings', 'postgres', '127.0.0.1', 'psw')
@@ -11,7 +13,12 @@ BuildingObject.create_tb()
 
 
 @app.route('/', methods=['GET', 'POST'])
-def route():
+def index():
+    return render_template('index.html')
+
+
+@app.route('/3dplot', methods=['GET', 'POST'])
+def ploting():
     if request.method == 'POST':  # this block is only entered when the form is submitted
         start = time.time()
         address = request.form.get('address')
@@ -41,11 +48,11 @@ def route():
             print(address, " :Address doesn't exist")
             return '''<h1>Address doesn't exist</h1>'''
         except Exception as e:
-            print("Something else went wrong: "+str(e))
+            print("Something else went wrong: " + str(e))
             exit()
 
         crop_chm_img = result["BuildingNPArray"]
-        #print(crop_chm_img)
+        # print(crop_chm_img)
         # 3D plot
         # fliplr: Reverse the order of elements in 'crop_chm_img' array horizontally
         fig = go.Figure(data=go.Surface(z=np.fliplr(crop_chm_img), colorscale='plotly3'))
@@ -59,12 +66,9 @@ def route():
                 'yanchor': 'top'},
             title_font_color="green")
 
-        fig.show()
+        return plot(fig, show_link=False, output_type="div", include_plotlyjs=True)
+        #fig.show()
 
-    return '''<form method="POST">
-                  Please enter an address: <input type="text" name="address"><br>
-                  <input type="submit" value="Submit"><br>
-              </form>'''
 
 
 
