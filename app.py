@@ -39,7 +39,7 @@ def ploting():
 
             if not result:
 
-                result = requests.get(f"http://127.0.0.0:5000/getnparray/?address={formattedaddress}").json()
+                result = requests.get(f"http://127.0.0.1:5000/getnparray/?address={formattedaddress}").json()
                 BuildingObject.insert_db(result)
 
             end = time.time()
