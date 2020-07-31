@@ -59,13 +59,12 @@ def route():
                 'yanchor': 'top'},
             title_font_color="green")
 
-        f = fig.show()
+        fig.show()
 
     return '''<form method="POST">
                   Please enter an address: <input type="text" name="address"><br>
                   <input type="submit" value="Submit"><br>
-              </form>
-            <h1>The plot: {}</h1>'''.format(f)
+              </form>'''
 
 
 
